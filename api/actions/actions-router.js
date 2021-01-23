@@ -47,11 +47,21 @@ router.post('/:id', validateAction, validateActionId, (req, res) => {
     })
 })
 
+router.post('/', validateAction, (req, res) => {
+    Actions.insert(req.action)
+    .then(action => {
+      res.status(201).json(action);
+    })
+    .catch(err => {
+      res.status(500).json({message: "Error adding an action", err});
+    })
+})
+
 //modify an action
 router.put('/:id', validateAction,validateActionId,(req, res) => {
     Actions.update(req.params.id, req.body)
     .then(actions => {
-      res.status(200).json(`Action ${actions.notes} updated`);
+      res.status(200).json(actions);
     })
     .catch(error => {
       console.log(error);
@@ -72,11 +82,11 @@ router.delete('/:id', validateActionId, (req, res) => {
 })
 
 function validateAction(req, res, next) {
-    const input = ["notes", "description"];
+    const input = ["notes", "description", "project_id"];
     const request = req.body;
   if(request) {
     if(input.every(key => request.hasOwnProperty(key))) {
-        const action = {...req.body, project_id: req.params.id};
+        const action = {...req.body};
         req.action = action;
       next();
     } else {
@@ -94,7 +104,7 @@ function validateActionId(req, res, next) {
       if(action) {
         next();
       } else {
-        next({code: 400, message: "Invalid action ID"});
+        next({code: 404, message: "Invalid action ID"});
       }
     })
     .catch(err => {

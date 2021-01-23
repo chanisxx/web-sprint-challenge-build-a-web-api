@@ -38,7 +38,7 @@ router.post('/', validateProject, (req, res) => {
 router.put('/:id', validateProjectId, validateProject, (req, res) => {
     Projects.update(req.params.id, req.body)
     .then(project => {
-      res.status(200).json(`Project ${project.name} updated`);
+      res.status(200).json(project);
     })
     .catch(error => {
       console.log(error);
@@ -92,7 +92,7 @@ function validateProjectId(req, res, next) {
         req.project = project;
         next();
       } else {
-        next({code: 400, message: "Invalid project ID"});
+        next({code: 404, message: "Invalid project ID"});
       }
     })
     .catch(err => {
