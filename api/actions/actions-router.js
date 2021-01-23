@@ -22,6 +22,20 @@ router.get('/', (req, res) => {
     });
 });
 
+// get an action given id
+router.get('/:id', validateActionId, (req, res) => {
+    Actions.get(req.params.id)
+    .then(r => {
+        res.status(200).json(r);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({
+        message: 'Error retrieving the actions',
+      });
+    });
+});
+
 // add a action
 router.post('/:id', validateAction, validateActionId, (req, res) => {
     Actions.insert(req.action)

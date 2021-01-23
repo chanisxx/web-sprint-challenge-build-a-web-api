@@ -58,17 +58,31 @@ router.delete('/:id', validateProjectId, (req, res) => {
     });
 })
 
-// get all actions
+// get project given id
 router.get('/:id', validateProjectId, (req, res) => {
-    Projects.getProjectActions(req.params.id)
-    .then(actions => {
-      res.status(200).json(actions)
+    Projects.get(req.params.id)
+    .then(action => {
+      res.status(200).json(action)
     })
     .catch(error => {
       console.log(error);
-      res.status(500).json({ message: 'Error retrieving the actions' });
+      res.status(500).json({ message: 'Error retrieving project' });
     });
 })
+
+// get actions in project with given id
+router.get('/:id/actions', (req, res) => {
+    Projects.getProjectActions(req.params.id)
+    .then(r => {
+        res.status(200).json(r);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({
+        message: 'Error retrieving the actions',
+      });
+    });
+});
 
 function validateProjectId(req, res, next) {
     const { id } = req.params;
@@ -101,6 +115,7 @@ function validateProjectId(req, res, next) {
       next({code: 400, message: "Missing user data", user: req.body});
     }
   }
+
   
 //   function validateAction(req, res, next) {
 //     // if(req.body && Object.keys(req.body) > 0) {
