@@ -13,7 +13,11 @@ router.use((req, res, next) => {
 router.get('/', (req, res) => {
     Projects.get()
     .then(r => {
-      res.status(200).json(r);
+        if(r) {
+            res.status(200).json(r);
+        } else {
+            return []
+        }
     })
     .catch(error => {
       console.log(error);
@@ -50,7 +54,11 @@ router.put('/:id', validateProjectId, validateProject, (req, res) => {
 router.delete('/:id', validateProjectId, (req, res) => {
     Projects.remove(req.params.id)
     .then(count => {
-      res.status(200).json({ message: `${count} account deleted: ${req.project.name}`})
+        if(count) {
+            res.status(200).json({ message: `${count} account deleted: ${req.project.name}`})
+        } else {
+            res.status(404).json({message: "Invalid project ID"})
+        }
     })
     .catch(error => {
       console.log(error);
@@ -85,7 +93,7 @@ router.get('/:id/actions', (req, res) => {
 });
 
 function validateProjectId(req, res, next) {
-    const { id } = req.params.id;
+    const { id } = req.params;
     Projects.get(id)
     .then(project => {
       if(project) {
