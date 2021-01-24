@@ -59,7 +59,7 @@ router.delete('/:id', validateProjectId, (req, res) => {
 })
 
 // get project given id
-router.get('/:id', validateProjectId, (req, res) => {
+router.get('/:id', (req, res) => {
     Projects.get(req.params.id)
     .then(action => {
       res.status(200).json(action)
